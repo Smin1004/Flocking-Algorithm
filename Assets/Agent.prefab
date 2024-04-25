@@ -118,9 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dca12e5843b4e5e47b79fd67d802c4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cohesionSize: 10
-  separationSize: 0
+  cohesionSize: 50
+  separationSize: 20
   layer:
     serializedVersion: 2
     m_Bits: 64
-  speed: 1
+  speed: 5

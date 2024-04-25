@@ -339,7 +339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 3510928534037114989, guid: 93a4b69ffa2a2284886dd85f24442505, type: 3}
-  count: 100
+  count: 20
   spawnSize: 30
 --- !u!4 &1441791266
 Transform:

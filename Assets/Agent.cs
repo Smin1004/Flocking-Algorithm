@@ -12,6 +12,7 @@ public class Agent : MonoBehaviour
     [SerializeField] float speed;
 
     List<Agent> neighborAgent = new();
+    Vector3 nextPos;
 
     void Start()
     {
@@ -20,27 +21,32 @@ public class Agent : MonoBehaviour
 
     void Update()
     {
-        Cohesion();
+        FindAgent();
 
-        Vector3 center = CheckCenterPos();
+        Vector3 center = Cohesion();
+        Vector3 alignment = Alignment();
+        Vector3 separation = Separation();
 
-        center = Vector3.Lerp(transform.forward, center, Time.deltaTime);
-        transform.rotation = Quaternion.LookRotation(center);
-        transform.position += speed * Time.deltaTime * transform.forward;
+
+        nextPos = center + alignment + separation;
+
+        nextPos = Vector3.Lerp(transform.forward, center, Time.deltaTime);
+        transform.rotation = Quaternion.LookRotation(nextPos);
+        transform.position += speed * Time.deltaTime * nextPos;
     }
 
-    void Cohesion()
+    void FindAgent()
     {
         neighborAgent.Clear();
 
-        Collider[] neighbor = Physics.OverlapSphere(transform.position, separationSize, layer);
+        Collider[] neighbor = Physics.OverlapSphere(transform.position, cohesionSize, layer);
         for (int i = 0; i < neighbor.Length; i++)
         {
             neighborAgent.Add(neighbor[i].GetComponent<Agent>());
         }
     }
 
-    Vector3 CheckCenterPos()
+    Vector3 Cohesion()
     {
         Vector3 center = Vector3.zero;
         if(neighborAgent.Count < 1) return center;
@@ -55,13 +61,31 @@ public class Agent : MonoBehaviour
         return center;
     }
 
-    void Alignment()
+    Vector3 Alignment()
     {
+        Vector3 alignment = Vector3.zero;
+        if(neighborAgent.Count < 1) return alignment;
 
+        for (int i = 0; i < neighborAgent.Count; i++)
+        {
+            alignment += neighborAgent[i].transform.forward;
+        }
+
+        alignment /= neighborAgent.Count;
+        return alignment;
     }
 
-    void Separation()
+    Vector3 Separation()
     {
+        Vector3 separation = Vector3.zero;
+        if(neighborAgent.Count < 1) return separation;
 
+        for (int i = 0; i < neighborAgent.Count; i++)
+        {
+            separation += transform.position - neighborAgent[i].transform.position;
+        }
+
+        separation /= neighborAgent.Count;
+        return separation;
     }
 }
