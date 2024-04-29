@@ -8,17 +8,19 @@ public class Agent : MonoBehaviour
 {
     [SerializeField] LayerMask layer;
     [SerializeField] float FOVAngle = 120;
-    float checkSize;
+    float checkSize = 10;
     float speed;
 
     Spawn spawn;
     List<Agent> neighborAgent = new();
     Vector3 nextPos;
+    Vector3 egoVector;
 
     public void Init(Spawn _spawn, float _speed){
         spawn = _spawn;
         speed = _speed;
-        checkSize = spawn.checkSize;
+
+        StartCoroutine(RandomValue());
     }
 
     void Update()
@@ -29,9 +31,10 @@ public class Agent : MonoBehaviour
         Vector3 alignment = Alignment() * spawn.alignmentWeight;
         Vector3 separation = Separation() * spawn.separationWeight;
         Vector3 bounds = Bounds() * spawn.boundsWeight;
+        Vector3 egoVec = egoVector * spawn.egoWeight;
 
 
-        nextPos = center + alignment + separation + bounds;
+        nextPos = center + alignment + separation + bounds + egoVec;
 
         nextPos = Vector3.Lerp(transform.forward, nextPos, Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(nextPos);
@@ -90,7 +93,7 @@ public class Agent : MonoBehaviour
 
         for (int i = 0; i < neighborAgent.Count; i++)
         {
-            separation += (transform.position - neighborAgent[i].transform.position);
+            separation += transform.position - neighborAgent[i].transform.position;
         }
 
         separation /= neighborAgent.Count;
@@ -100,7 +103,15 @@ public class Agent : MonoBehaviour
 
     Vector3 Bounds()
     {
-        Vector3 offsetToCenter = spawn.transform.position - transform.position;
+        Vector3 offsetToCenter = spawn.mid.transform.position - transform.position;
         return offsetToCenter.magnitude >= spawn.spawnSize ? offsetToCenter.normalized : Vector3.zero;
+    }
+
+    IEnumerator RandomValue()
+    {
+        speed = Random.Range(spawn.speed.x, spawn.speed.y);
+        egoVector = Random.insideUnitSphere;
+        yield return new WaitForSeconds(Random.Range(1, 3f));
+        StartCoroutine(RandomValue());
     }
 }

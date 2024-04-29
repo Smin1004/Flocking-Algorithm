@@ -6,17 +6,18 @@ using UnityEngine;
 public class Spawn : MonoBehaviour
 {
     [SerializeField] Agent agent;
+    public Transform mid;
     [SerializeField] int count;
     public float spawnSize;
 
     [Header("Value")]
-    public float checkSize;
     public Vector2 speed;
 
     public float cohesionWeight;
     public float alignmentWeight;
     public float separationWeight;
     public float boundsWeight;
+    public float egoWeight;
 
     public int maxNeighbourCount;
 
