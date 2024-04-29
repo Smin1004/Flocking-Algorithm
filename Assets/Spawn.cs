@@ -1,12 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class Spawn : MonoBehaviour
 {
     [SerializeField] Agent agent;
     [SerializeField] int count;
-    [SerializeField] float spawnSize;
+    public float spawnSize;
+
+    [Header("Value")]
+    public float checkSize;
+    public Vector2 speed;
+
+    public float cohesionWeight;
+    public float alignmentWeight;
+    public float separationWeight;
+    public float boundsWeight;
+
+    public int maxNeighbourCount;
 
     void Start()
     {
@@ -16,7 +28,8 @@ public class Spawn : MonoBehaviour
             ranPos *= spawnSize;
 
             Quaternion ranRot = Quaternion.Euler(0, Random.Range(0, 360), 0);
-            Instantiate(agent, ranPos, ranRot, this.transform);
+            Agent temp = Instantiate(agent, ranPos, ranRot, this.transform);
+            temp.Init(this, Random.Range(speed.x, speed.y));
         }
     }
 }

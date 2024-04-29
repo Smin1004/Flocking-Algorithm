@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8709270183191547365}
+  - component: {fileID: 3510928534037114989}
   - component: {fileID: 7655175031871132921}
   - component: {fileID: 6922019809587509782}
   - component: {fileID: 3005192120346322460}
-  - component: {fileID: 3510928534037114989}
   m_Layer: 6
   m_Name: Agent
   m_TagString: Untagged
@@ -35,6 +35,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3510928534037114989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3691664037134641231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dca12e5843b4e5e47b79fd67d802c4e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CheckSize: 30
+  layer:
+    serializedVersion: 2
+    m_Bits: 64
+  speed: 5
+  cohesionWeight: 1
+  alignmentWeight: 1
+  separationWeight: 1
 --- !u!33 &7655175031871132921
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -106,21 +126,3 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3510928534037114989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3691664037134641231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dca12e5843b4e5e47b79fd67d802c4e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cohesionSize: 50
-  separationSize: 20
-  layer:
-    serializedVersion: 2
-    m_Bits: 64
-  speed: 5

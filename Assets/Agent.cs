@@ -6,31 +6,34 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    [SerializeField] float cohesionSize;
-    [SerializeField] float separationSize;
     [SerializeField] LayerMask layer;
-    [SerializeField] float speed;
+    [SerializeField] float FOVAngle = 120;
+    float checkSize;
+    float speed;
 
+    Spawn spawn;
     List<Agent> neighborAgent = new();
     Vector3 nextPos;
 
-    void Start()
-    {
-
+    public void Init(Spawn _spawn, float _speed){
+        spawn = _spawn;
+        speed = _speed;
+        checkSize = spawn.checkSize;
     }
 
     void Update()
     {
         FindAgent();
 
-        Vector3 center = Cohesion();
-        Vector3 alignment = Alignment();
-        Vector3 separation = Separation();
+        Vector3 center = Cohesion() * spawn.cohesionWeight;
+        Vector3 alignment = Alignment() * spawn.alignmentWeight;
+        Vector3 separation = Separation() * spawn.separationWeight;
+        Vector3 bounds = Bounds() * spawn.boundsWeight;
 
 
-        nextPos = center + alignment + separation;
+        nextPos = center + alignment + separation + bounds;
 
-        nextPos = Vector3.Lerp(transform.forward, center, Time.deltaTime);
+        nextPos = Vector3.Lerp(transform.forward, nextPos, Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(nextPos);
         transform.position += speed * Time.deltaTime * nextPos;
     }
@@ -39,10 +42,13 @@ public class Agent : MonoBehaviour
     {
         neighborAgent.Clear();
 
-        Collider[] neighbor = Physics.OverlapSphere(transform.position, cohesionSize, layer);
+        Collider[] neighbor = Physics.OverlapSphere(transform.position, checkSize, layer);
         for (int i = 0; i < neighbor.Length; i++)
         {
-            neighborAgent.Add(neighbor[i].GetComponent<Agent>());
+            if (Vector3.Angle(transform.forward, neighbor[i].transform.position - transform.position) <= FOVAngle)
+                neighborAgent.Add(neighbor[i].GetComponent<Agent>());
+            if(i > spawn.maxNeighbourCount) 
+                break;
         }
     }
 
@@ -58,6 +64,7 @@ public class Agent : MonoBehaviour
 
         center /= neighborAgent.Count;
         center -= transform.position;
+        center.Normalize();
         return center;
     }
 
@@ -72,6 +79,7 @@ public class Agent : MonoBehaviour
         }
 
         alignment /= neighborAgent.Count;
+        alignment.Normalize();
         return alignment;
     }
 
@@ -82,10 +90,17 @@ public class Agent : MonoBehaviour
 
         for (int i = 0; i < neighborAgent.Count; i++)
         {
-            separation += transform.position - neighborAgent[i].transform.position;
+            separation += (transform.position - neighborAgent[i].transform.position);
         }
 
         separation /= neighborAgent.Count;
+        separation.Normalize();
         return separation;
+    }
+
+    Vector3 Bounds()
+    {
+        Vector3 offsetToCenter = spawn.transform.position - transform.position;
+        return offsetToCenter.magnitude >= spawn.spawnSize ? offsetToCenter.normalized : Vector3.zero;
     }
 }
