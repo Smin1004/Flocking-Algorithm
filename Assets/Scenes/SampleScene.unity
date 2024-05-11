@@ -437,9 +437,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: 3510928534037114989, guid: 93a4b69ffa2a2284886dd85f24442505, type: 3}
   mid: {fileID: 1182533110}
-  count: 500
-  spawnSize: 50
-  speed: {x: 10, y: 15}
+  count: 1000
+  spawnSize: 30
+  speed: {x: 5, y: 10}
   cohesionWeight: 1.5
   alignmentWeight: 3
   separationWeight: 1

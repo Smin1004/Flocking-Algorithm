@@ -12,9 +12,9 @@ public class Agent : MonoBehaviour
     float speed;
 
     Spawn spawn;
-    List<Agent> neighborAgent = new();
     Vector3 nextPos;
     Vector3 egoVector;
+    [SerializeField] List<Agent> neighborAgent = new();
 
     public void Init(Spawn _spawn, float _speed){
         spawn = _spawn;
