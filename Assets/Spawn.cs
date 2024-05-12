@@ -17,6 +17,7 @@ public class Spawn : MonoBehaviour
     public float alignmentWeight;
     public float separationWeight;
     public float boundsWeight;
+    public float obstacleWeight;
     public float egoWeight;
 
     public int maxNeighbourCount;

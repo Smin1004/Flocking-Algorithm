@@ -6,10 +6,13 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    [SerializeField] LayerMask layer;
+    [SerializeField] LayerMask unitLayer;
+    [SerializeField] LayerMask enemyLayer;
     [SerializeField] float FOVAngle = 120;
     float checkSize = 10;
+    float additionalSpeed = 0;
     float speed;
+    float enemyDistance = 10;
 
     Spawn spawn;
     Vector3 nextPos;
@@ -25,27 +28,31 @@ public class Agent : MonoBehaviour
 
     void Update()
     {
+        if (additionalSpeed > 0)
+            additionalSpeed -= Time.deltaTime;
+
         FindAgent();
 
         Vector3 center = Cohesion() * spawn.cohesionWeight;
         Vector3 alignment = Alignment() * spawn.alignmentWeight;
         Vector3 separation = Separation() * spawn.separationWeight;
         Vector3 bounds = Bounds() * spawn.boundsWeight;
+        Vector3 obstacle = Obstacle() * spawn.obstacleWeight;
         Vector3 egoVec = egoVector * spawn.egoWeight;
 
 
-        nextPos = center + alignment + separation + bounds + egoVec;
+        nextPos = center + alignment + separation + bounds + egoVec + obstacle;
 
         nextPos = Vector3.Lerp(transform.forward, nextPos, Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(nextPos);
-        transform.position += speed * Time.deltaTime * nextPos;
+        transform.position += (speed + additionalSpeed) * Time.deltaTime * nextPos;
     }
 
     void FindAgent()
     {
         neighborAgent.Clear();
 
-        Collider[] neighbor = Physics.OverlapSphere(transform.position, checkSize, layer);
+        Collider[] neighbor = Physics.OverlapSphere(transform.position, checkSize, unitLayer);
         for (int i = 0; i < neighbor.Length; i++)
         {
             if (Vector3.Angle(transform.forward, neighbor[i].transform.position - transform.position) <= FOVAngle)
@@ -105,6 +112,19 @@ public class Agent : MonoBehaviour
     {
         Vector3 offsetToCenter = spawn.mid.transform.position - transform.position;
         return offsetToCenter.magnitude >= spawn.spawnSize ? offsetToCenter.normalized : Vector3.zero;
+    }
+
+    private Vector3 Obstacle()
+    {
+        Vector3 obstacleVec = Vector3.zero;
+        RaycastHit hit;
+        if(Physics.Raycast(transform.position,transform.forward,out hit, enemyDistance, enemyLayer))
+        {
+            Debug.DrawLine(transform.position, hit.point, Color.black);
+            obstacleVec = hit.normal;
+            additionalSpeed = 10;
+        }
+        return obstacleVec;
     }
 
     IEnumerator RandomValue()

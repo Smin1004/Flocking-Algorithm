@@ -218,10 +218,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dca12e5843b4e5e47b79fd67d802c4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer:
+  unitLayer:
     serializedVersion: 2
     m_Bits: 64
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
   FOVAngle: 120
+  neighborAgent: []
 --- !u!135 &3005192120346322460
 SphereCollider:
   m_ObjectHideFlags: 0
